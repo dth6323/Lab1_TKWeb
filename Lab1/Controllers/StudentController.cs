@@ -5,6 +5,7 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace TH01.Controllers
 {
+    [Route("/Admin/Student")]
     public class StudentController : Controller
     {
         private List<Student> listStudents = new List<Student>();
@@ -34,13 +35,14 @@ namespace TH01.Controllers
 
         };
         }
-        [Route("Admin/Student/List")]
+        [HttpGet("List")]
+        [HttpGet("/")]
         public IActionResult Index()
         {
             //Trả về View Index.cshtml cùng Model là danh sách sv listStudents
             return View(listStudents);
         }
-        [HttpGet("Admin/Student/Add")]
+        [HttpGet("Add")]
         public IActionResult Create()
         {
             //lấy danh sách các giá trị Gender để hiển thị radio button trên form
@@ -56,7 +58,7 @@ namespace TH01.Controllers
         };
             return View();
         }
-        [HttpPost("Admin/Student/Add")]
+        [HttpPost("Add")]
         public async Task<IActionResult> Create(Student s)
         {
             if(s.formFile != null)
