@@ -1,9 +1,21 @@
+using Microsoft.EntityFrameworkCore;
+using TH01.Data;
+using TH01.Models;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<SchoolContext>(options => options
+.UseSqlServer(builder.Configuration.GetConnectionString("SchoolContext")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    DbInitalizer.Initialize(services);
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

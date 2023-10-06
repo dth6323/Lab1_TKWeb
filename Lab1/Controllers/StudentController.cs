@@ -45,34 +45,46 @@ namespace TH01.Controllers
         [HttpGet("Add")]
         public IActionResult Create()
         {
+
             //lấy danh sách các giá trị Gender để hiển thị radio button trên form
             ViewBag.AllGenders = Enum.GetValues(typeof(Gender)).Cast<Gender>().ToList();
-            //lấy danh sách các giá trị Branch để hiển thị select-option trên form
-            //Để hiển thị select-option trên View cần dùng List<SelectListItem>
             ViewBag.AllBranches = new List<SelectListItem>()
-        {
-        new SelectListItem { Text = "IT", Value = "1" },
-        new SelectListItem { Text = "BE", Value = "2" },
-        new SelectListItem { Text = "CE", Value = "3" },
-        new SelectListItem { Text = "EE", Value = "4" }
-        };
+{
+new SelectListItem { Text = "IT", Value = "1" },
+new SelectListItem { Text = "BE", Value = "2" },
+new SelectListItem { Text = "CE", Value = "3" },
+new SelectListItem { Text = "EE", Value = "4" }
+};
             return View();
         }
         [HttpPost("Add")]
         public async Task<IActionResult> Create(Student s)
         {
-            if(s.formFile != null)
+            if (s.formFile != null)
             {
                 var file = Path.Combine(_environment.ContentRootPath, "wwwroot\\uploads", s.formFile.FileName);
-                using (FileStream filestream  = new FileStream(file, FileMode.Create))
+                using (FileStream filestream = new FileStream(file, FileMode.Create))
                 {
                     await s.formFile.CopyToAsync(filestream);
                 }
 
             }
-            s.Id = listStudents.Last<Student>().Id + 1;
-            listStudents.Add(s);
-            return View("Index", listStudents);
+            if (ModelState.IsValid)
+            {
+                s.Id = listStudents.Last<Student>().Id + 1;
+                listStudents.Add(s);
+                return View("Index", listStudents);
+            }
+
+            ViewBag.AllGenders = Enum.GetValues(typeof(Gender)).Cast<Gender>().ToList();
+            ViewBag.AllBranches = new List<SelectListItem>()
+            {
+            new SelectListItem { Text = "IT", Value = "1" },
+            new SelectListItem { Text = "BE", Value = "2" },
+            new SelectListItem { Text = "CE", Value = "3" },
+            new SelectListItem { Text = "EE", Value = "4" }
+            };
+            return View();
         }
     }
 }
